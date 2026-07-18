@@ -1,0 +1,3 @@
+class OcrService {
+  const OcrService();
+}
