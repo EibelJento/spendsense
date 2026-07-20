@@ -34,6 +34,7 @@ object PaymentDetector {
         val merchant = MerchantExtractor.extract(notification)
 
         return DetectedTransaction(
+            notificationId = "",
             amount = amount,
             type = type,
             sourceApp = notification.packageName,

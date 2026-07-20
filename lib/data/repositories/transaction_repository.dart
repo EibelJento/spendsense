@@ -5,24 +5,49 @@ import '../database/database_service.dart';
 import '../models/transaction.dart';
 
 class TransactionRepository {
+  
   TransactionRepository({DatabaseService? databaseService})
       : _databaseService = databaseService ?? DatabaseService.instance;
 
   final DatabaseService _databaseService;
 
   Future<void> addTransaction(TransactionModel transaction) async {
-    try {
-      final Database db = await _databaseService.database;
+  try {
+    final Database db = await _databaseService.database;
 
-      await db.insert(
-        DatabaseService.tableTransactions,
-        transaction.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace,
+    if (transaction.notificationId != null) {
+      final exists = await notificationExists(
+        transaction.notificationId!,
       );
-    } catch (error) {
-      throw AppException('Failed to add transaction', cause: error);
+
+      if (exists) {
+        return;
+      }
     }
+
+    await db.insert(
+      DatabaseService.tableTransactions,
+      transaction.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  } catch (error) {
+    throw AppException('Failed to add transaction', cause: error);
   }
+}
+
+  Future<bool> notificationExists(String notificationId) async {
+  final Database db = await _databaseService.database;
+
+  final result = await db.query(
+    DatabaseService.tableTransactions,
+    columns: [DatabaseService.columnId],
+    where: '${DatabaseService.columnNotificationId} = ?',
+    whereArgs: [notificationId],
+    limit: 1,
+  );
+
+  return result.isNotEmpty;
+}
 
   Future<List<TransactionModel>> getTransactions() async {
     return _getTransactionsWithQuery(

@@ -136,7 +136,7 @@ class HomeScreenState extends State<HomeScreen> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            '\$${_currentBalance.toStringAsFixed(2)}',
+                            '\₹${_currentBalance.toStringAsFixed(2)}',
                             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
@@ -153,7 +153,7 @@ class HomeScreenState extends State<HomeScreen> {
                       Expanded(
                         child: SummaryCard(
                           title: 'Income',
-                          value: '\$${_totalIncome.toStringAsFixed(2)}',
+                          value: '\₹${_totalIncome.toStringAsFixed(2)}',
                           icon: Icons.arrow_downward,
                           color: Colors.green,
                         ),
@@ -162,7 +162,7 @@ class HomeScreenState extends State<HomeScreen> {
                       Expanded(
                         child: SummaryCard(
                           title: 'Expense',
-                          value: '\$${_totalExpense.toStringAsFixed(2)}',
+                          value: '\₹${_totalExpense.toStringAsFixed(2)}',
                           icon: Icons.arrow_upward,
                           color: Colors.red,
                         ),

@@ -7,6 +7,8 @@ import com.example.spendsense.notification.parser.NotificationParser
 import com.example.spendsense.notification.filter.NotificationFilter
 import com.example.spendsense.notification.detector.PaymentDetector
 import com.example.spendsense.notification.bridge.NotificationBridge
+import com.example.spendsense.notification.queue.PendingTransactionQueue
+import org.json.JSONObject
 
 class SpendSenseNotificationListener : NotificationListenerService() {
 
@@ -19,21 +21,35 @@ class SpendSenseNotificationListener : NotificationListenerService() {
 
         if (sbn == null) return
 
-        val extras = sbn.notification.extras
-
         val notification = NotificationParser.parse(sbn)
         if (!NotificationFilter.isSupported(notification)) {
             return
         }
 
-        val transaction = PaymentDetector.detect(notification)
-        Log.d(TAG, "Detected Transaction: $transaction")
+        val detected = PaymentDetector.detect(notification)
 
-        if (transaction == null) {
-            return
+if (detected == null) {
+    return
+}
+
+val transaction = detected.copy(
+    notificationId = sbn.key
+)
+
+Log.d(TAG, "Detected Transaction: $transaction")
+
+        val json = JSONObject().apply {
+        put("notificationId", transaction.notificationId)
+        put("amount", transaction.amount)
+        put("type", transaction.type.name)
+        put("sourceApp", transaction.sourceApp)
+        put("merchant", transaction.merchant)
+        put("timestamp", transaction.timestamp)
         }
 
-        NotificationBridge.publish(notification)
+    PendingTransactionQueue.enqueue(this, json)
+
+    NotificationBridge.publish(transaction)
 
         Log.d(TAG, "==============================")
         Log.d(TAG, "Package : ${notification.packageName}")

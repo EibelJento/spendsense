@@ -6,7 +6,7 @@ class DatabaseService {
 
   static final DatabaseService instance = DatabaseService._();
 
-  static const int databaseVersion = 2;
+  static const int databaseVersion = 3;
   static const String databaseName = 'spendsense.db';
 
   static const String tableTransactions = 'transactions';
@@ -74,7 +74,7 @@ class DatabaseService {
         $columnAddress TEXT,
         $columnReceiptImage TEXT,
         $columnVoiceNote TEXT,
-        $columnNotificationId INTEGER,
+        $columnNotificationId TEXT,
         $columnIsAutoDetected INTEGER NOT NULL DEFAULT 0,
         $columnCurrency TEXT NOT NULL DEFAULT 'USD',
         $columnTags TEXT,
@@ -95,7 +95,7 @@ class DatabaseService {
       await db.execute('ALTER TABLE $tableTransactions ADD COLUMN $columnAddress TEXT');
       await db.execute('ALTER TABLE $tableTransactions ADD COLUMN $columnReceiptImage TEXT');
       await db.execute('ALTER TABLE $tableTransactions ADD COLUMN $columnVoiceNote TEXT');
-      await db.execute('ALTER TABLE $tableTransactions ADD COLUMN $columnNotificationId INTEGER');
+      await db.execute('ALTER TABLE $tableTransactions ADD COLUMN $columnNotificationId TEXT');
       await db.execute('ALTER TABLE $tableTransactions ADD COLUMN $columnIsAutoDetected INTEGER NOT NULL DEFAULT 0');
       await db.execute('ALTER TABLE $tableTransactions ADD COLUMN $columnCurrency TEXT NOT NULL DEFAULT "USD"');
       await db.execute('ALTER TABLE $tableTransactions ADD COLUMN $columnTags TEXT');

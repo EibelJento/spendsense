@@ -145,7 +145,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     child: Row(
                       children: [
                         Expanded(child: Text(entry.key)),
-                        Text('\$${entry.value.toStringAsFixed(2)}'),
+                        Text('\₹${entry.value.toStringAsFixed(2)}'),
                       ],
                     ),
                   );

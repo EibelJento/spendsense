@@ -77,7 +77,7 @@ class TransactionModel {
     this.voiceNote,
     this.notificationId,
     this.isAutoDetected = false,
-    this.currency = 'USD',
+    this.currency = 'INR',
     this.tags = const [],
     this.createdAt,
     this.updatedAt,
@@ -99,7 +99,7 @@ class TransactionModel {
   final String? address;
   final String? receiptImage;
   final String? voiceNote;
-  final int? notificationId;
+  final String? notificationId;
   final bool isAutoDetected;
   final String currency;
   final List<String> tags;
@@ -140,7 +140,7 @@ class TransactionModel {
     String? address,
     String? receiptImage,
     String? voiceNote,
-    int? notificationId,
+    String? notificationId,
     bool? isAutoDetected,
     String? currency,
     List<String>? tags,
@@ -234,7 +234,7 @@ class TransactionModel {
       address: map['address'] as String?,
       receiptImage: map['receiptImage'] as String?,
       voiceNote: map['voiceNote'] as String?,
-      notificationId: map['notificationId'] as int?,
+      notificationId: map['notificationId'] as String?,
       isAutoDetected: map['isAutoDetected'] == 1 || map['isAutoDetected'] == true,
       currency: map['currency'] as String? ?? 'USD',
       tags: (map['tags'] as String? ?? '')

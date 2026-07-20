@@ -1,13 +1,20 @@
 package com.example.spendsense.notification.bridge
 
-import android.util.Log
-import com.example.spendsense.notification.domain.RawNotification
+import com.example.spendsense.notification.domain.DetectedTransaction
 
 object NotificationBridge {
 
-    private const val TAG = "NotificationBridge"
+    fun publish(transaction: DetectedTransaction) {
 
-    fun publish(notification: RawNotification) {
-        Log.d(TAG, "Publishing: $notification")
+        NotificationEventChannel.send(
+            mapOf(
+                "notificationId" to transaction.notificationId,
+                "amount" to transaction.amount,
+                "type" to transaction.type.name,
+                "sourceApp" to transaction.sourceApp,
+                "merchant" to transaction.merchant,
+                "timestamp" to transaction.timestamp
+            )
+        )
     }
 }
