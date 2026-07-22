@@ -22,13 +22,23 @@ class SpendSenseNotificationListener : NotificationListenerService() {
         if (sbn == null) return
 
         val notification = NotificationParser.parse(sbn)
+        Log.d(TAG, "==============================")
+Log.d(TAG, "Package : ${notification.packageName}")
+Log.d(TAG, "Title   : ${notification.title}")
+Log.d(TAG, "Text    : ${notification.text}")
+        if (!NotificationFilter.isSupported(notification)) {
+    Log.d(TAG, "Filtered out")
+    return
+}
         if (!NotificationFilter.isSupported(notification)) {
             return
         }
+        
 
         val detected = PaymentDetector.detect(notification)
 
 if (detected == null) {
+    Log.d(TAG, "PaymentDetector returned null")
     return
 }
 
@@ -53,7 +63,7 @@ Log.d(TAG, "Detected Transaction: $transaction")
 
         Log.d(TAG, "==============================")
         Log.d(TAG, "Package : ${notification.packageName}")
-        Log.d(TAG, "Title   : ${notification.title}")
+        Log.d(TAG, "Merchant: ${transaction.merchant}")
         Log.d(TAG, "Text    : ${notification.text}")
         Log.d(TAG, "Time    : ${notification.timestamp}")
     }

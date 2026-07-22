@@ -60,13 +60,13 @@ extension PaymentMethodValue on PaymentMethod {
 class TransactionModel {
   const TransactionModel({
     this.id,
-    required this.title,
     required this.amount,
     required this.type,
     required this.category,
     required this.date,
     this.notes = '',
     this.subcategory,
+    this.originalMerchant,
     this.merchant,
     this.paymentMethod = PaymentMethod.other,
     this.upiApp,
@@ -84,13 +84,13 @@ class TransactionModel {
   });
 
   final int? id;
-  final String title;
   final double amount;
   final TransactionType type;
   final String category;
   final DateTime date;
   final String notes;
   final String? subcategory;
+  final String? originalMerchant;
   final String? merchant;
   final PaymentMethod paymentMethod;
   final String? upiApp;
@@ -125,13 +125,13 @@ class TransactionModel {
 
   TransactionModel copyWith({
     int? id,
-    String? title,
     double? amount,
     TransactionType? type,
     String? category,
     DateTime? date,
     String? notes,
     String? subcategory,
+    String? originalMerchant,
     String? merchant,
     PaymentMethod? paymentMethod,
     String? upiApp,
@@ -149,13 +149,14 @@ class TransactionModel {
   }) {
     return TransactionModel(
       id: id ?? this.id,
-      title: title ?? this.title,
       amount: amount ?? this.amount,
       type: type ?? this.type,
       category: category ?? this.category,
       date: date ?? this.date,
       notes: notes ?? this.notes,
       subcategory: subcategory ?? this.subcategory,
+      originalMerchant:
+    originalMerchant ?? this.originalMerchant,
       merchant: merchant ?? this.merchant,
       paymentMethod: paymentMethod ?? this.paymentMethod,
       upiApp: upiApp ?? this.upiApp,
@@ -176,11 +177,11 @@ class TransactionModel {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'title': title,
       'amount': amount,
       'type': type.value,
       'category': category,
       'subcategory': subcategory,
+      'originalMerchant': originalMerchant,
       'merchant': merchant,
       'paymentMethod': paymentMethod.value,
       'upiApp': upiApp,
@@ -219,13 +220,13 @@ class TransactionModel {
   factory TransactionModel.fromMap(Map<String, dynamic> map) {
     return TransactionModel(
       id: map['id'] as int?,
-      title: map['title'] as String,
       amount: (map['amount'] as num).toDouble(),
       type: TransactionTypeValue.fromValue(map['type'] as String?),
       category: map['category'] as String,
       date: _parseRequiredDate(map['date'] as String?),
       notes: (map['notes'] as String?) ?? '',
       subcategory: map['subcategory'] as String?,
+      originalMerchant: map['originalMerchant'] as String?,
       merchant: map['merchant'] as String?,
       paymentMethod: PaymentMethodValue.fromValue(map['paymentMethod'] as String?),
       upiApp: map['upiApp'] as String?,
@@ -236,7 +237,7 @@ class TransactionModel {
       voiceNote: map['voiceNote'] as String?,
       notificationId: map['notificationId'] as String?,
       isAutoDetected: map['isAutoDetected'] == 1 || map['isAutoDetected'] == true,
-      currency: map['currency'] as String? ?? 'USD',
+      currency: map['currency'] as String? ?? 'INR',
       tags: (map['tags'] as String? ?? '')
           .split(',')
           .where((tag) => tag.isNotEmpty)

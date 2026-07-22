@@ -9,16 +9,13 @@ object AmountExtractor {
 
     fun extract(notification: RawNotification): Double? {
 
-        val content = "${notification.title} ${notification.text}"
+        val content = "${notification.title.orEmpty()} ${notification.text.orEmpty()}"
 
         val match = amountRegex.find(content)
 
-        if (match != null) {
-            return match.groupValues[1]
-                .replace(",", "")
-                .toDoubleOrNull()
-        }
-
-        return null
+        return match?.groupValues
+            ?.get(1)
+            ?.replace(",", "")
+            ?.toDoubleOrNull()
     }
 }

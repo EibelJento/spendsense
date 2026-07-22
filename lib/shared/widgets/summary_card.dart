@@ -23,7 +23,10 @@ class SummaryCard extends StatelessWidget {
           children: [
             CircleAvatar(
               backgroundColor: color.withValues(alpha: 0.12),
-              child: Icon(icon, color: color),
+              child: Icon(
+                icon,
+                color: color,
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -32,14 +35,16 @@ class SummaryCard extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.grey[600],
+                        ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     value,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                 ],
               ),

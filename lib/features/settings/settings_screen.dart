@@ -9,7 +9,7 @@ class SettingsScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('Settings')),
       body: ListView(
         children: const [
-          ListTile(title: Text('Currency'), trailing: Text('USD')),
+          ListTile(title: Text('Currency'), trailing: Text('INR')),
           ListTile(title: Text('Notifications'), trailing: Switch(value: true, onChanged: null)),
           ListTile(title: Text('Theme'), trailing: Text('System')),
         ],

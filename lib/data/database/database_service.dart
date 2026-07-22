@@ -6,17 +6,17 @@ class DatabaseService {
 
   static final DatabaseService instance = DatabaseService._();
 
-  static const int databaseVersion = 3;
+  static const int databaseVersion = 6;
   static const String databaseName = 'spendsense.db';
 
   static const String tableTransactions = 'transactions';
 
   static const String columnId = 'id';
-  static const String columnTitle = 'title';
   static const String columnAmount = 'amount';
   static const String columnType = 'type';
   static const String columnCategory = 'category';
   static const String columnSubcategory = 'subcategory';
+  static const String columnOriginalMerchant = 'originalMerchant';
   static const String columnMerchant = 'merchant';
   static const String columnPaymentMethod = 'paymentMethod';
   static const String columnUpiApp = 'upiApp';
@@ -33,6 +33,10 @@ class DatabaseService {
   static const String columnTags = 'tags';
   static const String columnCreatedAt = 'createdAt';
   static const String columnUpdatedAt = 'updatedAt';
+  static const String tableMerchantAliases = 'merchant_aliases';
+  static const String columnAliasId = 'id';
+  static const String columnMerchantName = 'merchantName';
+  static const String columnDisplayName = 'displayName';
 
   static Database? _database;
 
@@ -56,33 +60,40 @@ class DatabaseService {
   }
 
   Future<void> _onCreate(Database db, int version) async {
-    await db.execute('''
-      CREATE TABLE $tableTransactions(
-        $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
-        $columnTitle TEXT NOT NULL,
-        $columnAmount REAL NOT NULL,
-        $columnType TEXT NOT NULL,
-        $columnCategory TEXT NOT NULL,
-        $columnSubcategory TEXT,
-        $columnMerchant TEXT,
-        $columnPaymentMethod TEXT,
-        $columnUpiApp TEXT,
-        $columnDate TEXT NOT NULL,
-        $columnNotes TEXT,
-        $columnLatitude REAL,
-        $columnLongitude REAL,
-        $columnAddress TEXT,
-        $columnReceiptImage TEXT,
-        $columnVoiceNote TEXT,
-        $columnNotificationId TEXT,
-        $columnIsAutoDetected INTEGER NOT NULL DEFAULT 0,
-        $columnCurrency TEXT NOT NULL DEFAULT 'USD',
-        $columnTags TEXT,
-        $columnCreatedAt TEXT NOT NULL,
-        $columnUpdatedAt TEXT NOT NULL
-      )
-    ''');
-  }
+  await db.execute('''
+    CREATE TABLE $tableTransactions(
+      $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
+      $columnAmount REAL NOT NULL,
+      $columnType TEXT NOT NULL,
+      $columnCategory TEXT NOT NULL,
+      $columnSubcategory TEXT,
+      $columnOriginalMerchant TEXT,
+      $columnMerchant TEXT,
+      $columnPaymentMethod TEXT,
+      $columnUpiApp TEXT,
+      $columnDate TEXT NOT NULL,
+      $columnNotes TEXT,
+      $columnLatitude REAL,
+      $columnLongitude REAL,
+      $columnAddress TEXT,
+      $columnReceiptImage TEXT,
+      $columnVoiceNote TEXT,
+      $columnNotificationId TEXT,
+      $columnIsAutoDetected INTEGER NOT NULL DEFAULT 0,
+      $columnCurrency TEXT NOT NULL DEFAULT 'INR',
+      $columnTags TEXT,
+      $columnCreatedAt TEXT NOT NULL,
+      $columnUpdatedAt TEXT NOT NULL
+    )
+  ''');
+      await db.execute('''
+    CREATE TABLE $tableMerchantAliases(
+      $columnAliasId INTEGER PRIMARY KEY AUTOINCREMENT,
+      $columnMerchantName TEXT NOT NULL UNIQUE,
+      $columnDisplayName TEXT NOT NULL
+    )
+  ''');
+}
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
@@ -97,10 +108,24 @@ class DatabaseService {
       await db.execute('ALTER TABLE $tableTransactions ADD COLUMN $columnVoiceNote TEXT');
       await db.execute('ALTER TABLE $tableTransactions ADD COLUMN $columnNotificationId TEXT');
       await db.execute('ALTER TABLE $tableTransactions ADD COLUMN $columnIsAutoDetected INTEGER NOT NULL DEFAULT 0');
-      await db.execute('ALTER TABLE $tableTransactions ADD COLUMN $columnCurrency TEXT NOT NULL DEFAULT "USD"');
+      await db.execute('ALTER TABLE $tableTransactions ADD COLUMN $columnCurrency TEXT NOT NULL DEFAULT "INR"');
       await db.execute('ALTER TABLE $tableTransactions ADD COLUMN $columnTags TEXT');
       await db.execute('ALTER TABLE $tableTransactions ADD COLUMN $columnCreatedAt TEXT NOT NULL DEFAULT ""');
       await db.execute('ALTER TABLE $tableTransactions ADD COLUMN $columnUpdatedAt TEXT NOT NULL DEFAULT ""');
     }
+    if (oldVersion < 4) {
+  await db.execute('''
+    CREATE TABLE $tableMerchantAliases(
+      $columnAliasId INTEGER PRIMARY KEY AUTOINCREMENT,
+      $columnMerchantName TEXT NOT NULL UNIQUE,
+      $columnDisplayName TEXT NOT NULL
+    )
+  ''');
+}
+if (oldVersion < 6) {
+  await db.execute(
+    'ALTER TABLE $tableTransactions ADD COLUMN $columnOriginalMerchant TEXT',
+  );
+}
   }
 }

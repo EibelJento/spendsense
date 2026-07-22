@@ -18,7 +18,7 @@ class TransactionListTile extends StatelessWidget {
               : Icons.arrow_upward,
         ),
       ),
-      title: Text(transaction.title),
+      title: Text(transaction.merchant ?? 'Unknown'),
       subtitle: Text('${transaction.category} • ${transaction.date.toDisplayDate()}'),
       trailing: Text(
         transaction.displayAmount,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../data/models/transaction.dart';
 import '../../data/repositories/transaction_repository.dart';
+import '../../data/repositories/merchant_alias_repository.dart';
 
 class AddTransactionScreen extends StatefulWidget {
   const AddTransactionScreen({
@@ -22,9 +23,10 @@ class _AddTransactionScreenState
     extends State<AddTransactionScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final _titleController = TextEditingController();
+  final _merchantController = TextEditingController();
   final _amountController = TextEditingController();
   final _notesController = TextEditingController();
+  final MerchantAliasRepository _aliasRepository = MerchantAliasRepository();
 
   String _type = 'Expense';
   String _category = 'Food';
@@ -36,7 +38,7 @@ class _AddTransactionScreenState
 
     if (widget.transaction != null) {
       final transaction = widget.transaction!;
-      _titleController.text = transaction.title;
+      _merchantController.text = transaction.merchant ?? '';
       _amountController.text = transaction.amount.toString();
       _notesController.text = transaction.notes;
       _type = transaction.type == TransactionType.income ? 'Income' : 'Expense';
@@ -78,22 +80,58 @@ class _AddTransactionScreenState
     try {
       final repository = TransactionRepository();
       final transaction = TransactionModel(
-        id: widget.transaction?.id,
-        title: _titleController.text.trim(),
-        amount: double.parse(_amountController.text),
-        type: _type.toLowerCase() == 'income'
-            ? TransactionType.income
-            : TransactionType.expense,
-        category: _category,
-        date: _selectedDate,
-        notes: _notesController.text.trim(),
-      );
+  id: widget.transaction?.id,
+  amount: double.parse(_amountController.text),
+  type: _type.toLowerCase() == 'income'
+      ? TransactionType.income
+      : TransactionType.expense,
+  category: _category,
+  date: _selectedDate,
+  notes: _notesController.text.trim(),
 
+  // Preserve existing values
+  subcategory: widget.transaction?.subcategory,
+  originalMerchant: widget.transaction?.originalMerchant,
+  merchant: _merchantController.text.trim().isEmpty
+    ? null
+    : _merchantController.text.trim(),
+  paymentMethod:
+      widget.transaction?.paymentMethod ?? PaymentMethod.other,
+  upiApp: widget.transaction?.upiApp,
+  latitude: widget.transaction?.latitude,
+  longitude: widget.transaction?.longitude,
+  address: widget.transaction?.address,
+  receiptImage: widget.transaction?.receiptImage,
+  voiceNote: widget.transaction?.voiceNote,
+  notificationId: widget.transaction?.notificationId,
+  isAutoDetected:
+      widget.transaction?.isAutoDetected ?? false,
+  currency: widget.transaction?.currency ?? 'INR',
+  tags: widget.transaction?.tags ?? const [],
+  createdAt: widget.transaction?.createdAt,
+  updatedAt: DateTime.now(),
+);
       if (widget.transaction != null) {
-        await repository.updateTransaction(transaction);
-      } else {
-        await repository.addTransaction(transaction);
-      }
+
+  // Save alias if this was an auto-detected transaction
+  if (widget.transaction!.originalMerchant != null &&
+    widget.transaction!.originalMerchant!.isNotEmpty &&
+    _merchantController.text.trim().isNotEmpty &&
+    widget.transaction!.originalMerchant != _merchantController.text.trim()) {
+
+  await _aliasRepository.saveAlias(
+    merchantName: widget.transaction!.originalMerchant!,
+    displayName: _merchantController.text.trim(),
+  );
+}
+
+  await repository.updateTransaction(transaction);
+
+} else {
+
+  await repository.addTransaction(transaction);
+
+}
 
       if (!mounted) return;
 
@@ -129,7 +167,7 @@ class _AddTransactionScreenState
 
   @override
   void dispose() {
-    _titleController.dispose();
+    _merchantController.dispose();
     _amountController.dispose();
     _notesController.dispose();
     super.dispose();
@@ -149,16 +187,19 @@ class _AddTransactionScreenState
           padding: const EdgeInsets.all(16),
           children: [
             TextFormField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: "Title",
-                border: OutlineInputBorder(),
-              ),
-              validator: (value) =>
-                  value == null || value.isEmpty
-                      ? "Please enter a title"
-                      : null,
-            ),
+  controller: _merchantController,
+  decoration: const InputDecoration(
+    labelText: "Merchant",
+    border: OutlineInputBorder(),
+    prefixIcon: Icon(Icons.person),
+  ),
+  validator: (value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Please enter a merchant';
+    }
+    return null;
+  }
+),
 
             const SizedBox(height: 16),
 

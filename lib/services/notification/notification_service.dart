@@ -13,19 +13,25 @@ class NotificationService {
       final map = Map<String, dynamic>.from(event);
 
       return TransactionModel(
-        title: map['merchant'] ?? 'UPI Transaction',
-        amount: (map['amount'] as num).toDouble(),
-        type: TransactionTypeValue.fromValue(map['type']),
-        category: 'Other',
-        date: DateTime.fromMillisecondsSinceEpoch(
-          map['timestamp'] as int,
-        ),
-        merchant: map['merchant'] as String?,
-        paymentMethod: PaymentMethod.upi,
-        upiApp: _getUpiApp(map['sourceApp'] as String?),
-        isAutoDetected: true,
-        currency: 'INR',
-      );
+  notificationId: map['notificationId'] as String?,
+  amount: (map['amount'] as num).toDouble(),
+  type: TransactionTypeValue.fromValue(map['type']),
+  category: 'Other',
+  date: DateTime.fromMillisecondsSinceEpoch(
+    map['timestamp'] as int,
+  ),
+
+  // Preserve the original merchant extracted from the notification
+  originalMerchant: map['merchant'] as String?,
+
+  // This may later be replaced with an alias in the repository
+  merchant: map['merchant'] as String?,
+
+  paymentMethod: PaymentMethod.upi,
+  upiApp: _getUpiApp(map['sourceApp'] as String?),
+  isAutoDetected: true,
+  currency: 'INR',
+);
     });
   }
 

@@ -32,13 +32,13 @@ class NotificationSyncService {
       debugPrint("Importing: $data");
       final transaction = TransactionModel(
         notificationId: data['notificationId'] as String?,
-        title: data['merchant'] ?? 'UPI Transaction',
         amount: (data['amount'] as num).toDouble(),
         type: TransactionTypeValue.fromValue(data['type']),
         category: 'Other',
         date: DateTime.fromMillisecondsSinceEpoch(
           data['timestamp'] as int,
         ),
+        originalMerchant: data['merchant'] as String?,
         merchant: data['merchant'] as String?,
         paymentMethod: PaymentMethod.upi,
         upiApp: _getUpiApp(data['sourceApp'] as String?),

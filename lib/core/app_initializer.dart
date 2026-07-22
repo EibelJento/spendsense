@@ -22,7 +22,7 @@ class AppInitializer {
     _notificationService.transactionStream.listen((transaction) async {
       await _repository.addTransaction(transaction);
 
-      debugPrint("Auto-saved: ${transaction.title}");
+      debugPrint("Auto-saved: ${transaction.merchant}");
     });
   }
 }
