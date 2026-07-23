@@ -24,6 +24,11 @@ object MerchantExtractor {
         ).find(content)?.let {
             return it.groupValues[1].trim()
         }
+        Regex("""via\s+upi\s+to\s+(.+?)\.""", RegexOption.IGNORE_CASE)
+    .find(content)
+    ?.let {
+        return it.groupValues[1].trim()
+    }
 
         return null
     }

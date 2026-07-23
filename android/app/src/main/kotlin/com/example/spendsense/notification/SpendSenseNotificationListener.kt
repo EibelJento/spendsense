@@ -9,6 +9,7 @@ import com.example.spendsense.notification.detector.PaymentDetector
 import com.example.spendsense.notification.bridge.NotificationBridge
 import com.example.spendsense.notification.queue.PendingTransactionQueue
 import org.json.JSONObject
+import com.example.spendsense.notification.domain.TransactionType
 
 class SpendSenseNotificationListener : NotificationListenerService() {
 
@@ -30,15 +31,16 @@ Log.d(TAG, "Text    : ${notification.text}")
     Log.d(TAG, "Filtered out")
     return
 }
-        if (!NotificationFilter.isSupported(notification)) {
-            return
-        }
-        
 
         val detected = PaymentDetector.detect(notification)
 
 if (detected == null) {
     Log.d(TAG, "PaymentDetector returned null")
+    return
+}
+
+if (detected.type != TransactionType.INCOME) {
+    Log.d(TAG, "Ignoring expense notification")
     return
 }
 

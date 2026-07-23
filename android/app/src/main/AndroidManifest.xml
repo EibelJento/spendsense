@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
     <application
         android:label="spendsense"
         android:name="${applicationName}"
@@ -37,6 +39,15 @@
             </intent-filter>
 
         </service>
+        <receiver
+    android:name=".notification.sms.SmsReceiver"
+    android:exported="true">
+
+    <intent-filter android:priority="999">
+        <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
+    </intent-filter>
+
+    </receiver>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
