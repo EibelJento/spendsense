@@ -8,6 +8,7 @@ import '../../shared/widgets/summary_card.dart';
 import '../../shared/widgets/transaction_list_tile.dart';
 import '../transactions/add_transaction_screen.dart';
 import '../transactions/transaction_detail_screen.dart';
+import 'package:spendsense/services/permission/permission_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,10 +26,14 @@ class HomeScreenState extends State<HomeScreen> {
   bool _isLoading = true;
 
   @override
-  void initState() {
-    super.initState();
-    loadTransactions();
-  }
+void initState() {
+  super.initState();
+  _initialize();
+}
+Future<void> _initialize() async {
+  await PermissionService().requestLocationPermission();
+  await loadTransactions();
+}
 
   Future<void> loadTransactions() async {
     setState(() {

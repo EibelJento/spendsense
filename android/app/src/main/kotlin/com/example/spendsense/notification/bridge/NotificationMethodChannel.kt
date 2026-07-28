@@ -24,16 +24,20 @@ class NotificationMethodChannel(
 
                     val obj = queue.getJSONObject(i)
 
-                    list.add(
-                        mapOf(
-                            "notificationId" to obj.getString("notificationId"),
-                            "amount" to obj.getDouble("amount"),
-                            "type" to obj.getString("type"),
-                            "sourceApp" to obj.getString("sourceApp"),
-                            "merchant" to obj.getString("merchant"),
-                            "timestamp" to obj.getLong("timestamp")
-                        )
-                    )
+                   list.add(
+    mapOf(
+        "notificationId" to obj.getString("notificationId"),
+        "amount" to obj.getDouble("amount"),
+        "type" to obj.getString("type"),
+        "sourceApp" to obj.getString("sourceApp"),
+        "merchant" to obj.optString("merchant", ""),
+        "timestamp" to obj.getLong("timestamp"),
+        "latitude" to if (obj.has("latitude") && !obj.isNull("latitude"))
+            obj.getDouble("latitude") else null,
+        "longitude" to if (obj.has("longitude") && !obj.isNull("longitude"))
+            obj.getDouble("longitude") else null
+    )
+)
                 }
 
                 result.success(list)

@@ -6,5 +6,7 @@ data class DetectedTransaction(
     val type: TransactionType,
     val sourceApp: String,
     val merchant: String?,
-    val timestamp: Long
+    val timestamp: Long,
+    val latitude: Double? = null,
+    val longitude: Double? = null
 )

@@ -30,6 +30,7 @@ class NotificationSyncService {
 
     for (final data in pending) {
       debugPrint("Importing: $data");
+      debugPrint("Incoming transaction: $data");
       final transaction = TransactionModel(
         notificationId: data['notificationId'] as String?,
         amount: (data['amount'] as num).toDouble(),
@@ -44,6 +45,8 @@ class NotificationSyncService {
         upiApp: _getUpiApp(data['sourceApp'] as String?),
         isAutoDetected: true,
         currency: 'INR',
+        latitude: (data['latitude'] as num?)?.toDouble(),
+        longitude: (data['longitude'] as num?)?.toDouble(),
       );
 
       await repository.addTransaction(transaction);
