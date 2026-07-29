@@ -1,122 +1,95 @@
 # 💰 SpendSense
 
-> An intelligent expense tracking application built with Flutter, designed to help users remember, organize, and analyze their spending effortlessly.
+> A smart expense tracking application built with Flutter that automatically detects transactions from SMS and notifications, helping users manage their finances with minimal manual effort.
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.x-blue?logo=flutter)
 ![Dart](https://img.shields.io/badge/Dart-3.x-blue?logo=dart)
+![Kotlin](https://img.shields.io/badge/Kotlin-Android-orange?logo=kotlin)
 ![SQLite](https://img.shields.io/badge/SQLite-Local%20Database-green)
 ![Platform](https://img.shields.io/badge/Platform-Android-success)
 
 ---
 
-## 📖 About
+# 📖 About
 
-SpendSense is a modern personal finance application built using **Flutter** and **SQLite**.
+SpendSense is a Flutter-based personal finance application that combines Flutter and native Android components to automate expense tracking.
 
-Unlike traditional expense trackers that require manual bookkeeping, SpendSense aims to evolve into an intelligent financial companion capable of automatically detecting payments, attaching contextual information, and providing AI-powered financial insights.
+The application detects expense transactions from SMS and income transactions from notifications, stores them locally using SQLite, and enriches expense transactions with GPS location data that can be viewed directly in Google Maps.
 
-This project is being developed as a production-style application with scalability, clean architecture, and maintainability in mind.
-
----
-
-# ✨ Current Features
-
-- ✅ Add income and expense transactions
-- ✅ Store transactions locally using SQLite
-- ✅ View transaction history
-- ✅ Automatic balance calculation
-- ✅ Category support
-- ✅ Notes for transactions
-- ✅ Material 3 UI
-- ✅ Repository Pattern
-- ✅ Feature-based architecture
+The project follows production-style development practices with a scalable architecture and clean separation between Flutter and Android native modules.
 
 ---
 
-# 🚀 Planned Features
+# ✨ Features
 
 ### Transaction Management
 
-- Edit transactions
-- Delete transactions
-- Search transactions
-- Advanced filters
-- Transaction details page
+- ✅ Add, edit and delete transactions
+- ✅ Income & expense tracking
+- ✅ Automatic balance calculation
+- ✅ Category management
+- ✅ Transaction notes
+- ✅ Local SQLite storage
+- ✅ Transaction detail screen
 
-### Analytics
+### Smart Detection
 
-- Monthly spending reports
-- Category-wise analysis
-- Income vs Expense charts
-- Spending trends
-- Budget tracking
+- ✅ Automatic expense detection from SMS
+- ✅ Automatic income detection from notifications
+- ✅ Merchant recognition
+- ✅ Automatic transaction creation
 
-### Smart Features
+### Location Features
 
-- UPI payment detection
-- Notification Listener
-- Automatic transaction suggestions
-- Merchant recognition
-- Receipt scanner (OCR)
-- Voice notes
-- Location tagging
+- ✅ Continuous foreground location tracking
+- ✅ GPS tagging for expense transactions
+- ✅ Reverse geocoding (address lookup)
+- ✅ View transaction location in Google Maps
 
-### AI Features
+### User Experience
 
-- Natural language search
-
-Examples:
-
-- "Show my Swiggy expenses"
-- "How much did I spend on food last month?"
-- "Show payments made yesterday"
-
-### Productivity
-
-- CSV Export
-- PDF Reports
-- Cloud Backup
-- Dark Mode
-- Multi-currency Support
+- ✅ Material 3 UI
+- ✅ Android 14/15 compatible
+- ✅ Offline-first architecture
+- ✅ Fast local database
 
 ---
 
-# 🏗️ Project Structure
+# 🏗️ Architecture
 
 ```
-lib/
-│
-├── app.dart
-├── main.dart
-│
-├── core/
-│   ├── constants/
-│   ├── theme/
-│   ├── utils/
-│   ├── extensions/
-│   └── errors/
-│
-├── data/
-│   ├── database/
-│   └── models/
-│
-├── features/
-│   ├── home/
-│   ├── transactions/
-│   ├── analytics/
-│   ├── search/
-│   └── settings/
-│
-├── services/
-│   ├── notification/
-│   ├── location/
-│   ├── ocr/
-│   └── export/
-│
-└── shared/
-    ├── widgets/
-    ├── dialogs/
-    └── animations/
+SMS
+   │
+   ▼
+SmsReceiver
+   │
+   ▼
+Payment Detector
+   │
+   ▼
+Current Location Cache
+   │
+   ▼
+SQLite
+   │
+   ▼
+Flutter UI
+```
+
+```
+Notifications
+      │
+      ▼
+Notification Listener
+      │
+      ▼
+Payment Detector
+      │
+      ▼
+SQLite
+      │
+      ▼
+Flutter UI
 ```
 
 ---
@@ -126,39 +99,44 @@ lib/
 | Technology | Purpose |
 |------------|---------|
 | Flutter | Cross-platform UI |
-| Dart | Programming Language |
-| SQLite | Local Storage |
-| sqflite | SQLite Plugin |
-| Material 3 | UI Design |
-| Repository Pattern | Data Layer |
-| Feature-first Architecture | Scalability |
+| Dart | Application logic |
+| Kotlin | Native Android integration |
+| SQLite | Local database |
+| sqflite | Database plugin |
+| MethodChannel | Flutter ↔ Android communication |
+| NotificationListenerService | Income detection |
+| BroadcastReceiver | SMS detection |
+| Foreground Service | Continuous location tracking |
+| Geolocator | GPS location |
+| Geocoding | Address lookup |
+| url_launcher | Google Maps integration |
+| SharedPreferences | Local settings |
 
 ---
 
-# 🎯 Development Philosophy
+# 📂 Project Structure
 
-SpendSense is built following production-level software engineering practices.
+```
+lib/
+│
+├── data/
+│   ├── database/
+│   └── models/
+│
+├── screens/
+│
+├── services/
+│   ├── location/
+│   ├── notification/
+│   └── database/
+│
+├── widgets/
+│
+└── main.dart
 
-- Feature-first architecture
-- Repository pattern
-- Modular codebase
-- Strong typing
-- Reusable widgets
-- Clean separation of concerns
-- Scalable folder structure
-- Maintainable code
-
-The goal is to build a project that resembles a real-world mobile application rather than a tutorial-based demo.
-
----
-
-# 📱 Screens
-
-- Home Dashboard
-- Add Transaction
-- Transaction History
-
-*(More screens will be added as development progresses.)*
+android/
+└── Native Kotlin implementation
+```
 
 ---
 
@@ -192,36 +170,41 @@ flutter run
 
 # 📌 Roadmap
 
-- [x] Project Setup
-- [x] SQLite Integration
-- [x] Transaction Repository
-- [x] Add Transactions
-- [x] Load Transactions
-- [ ] Edit Transactions
-- [ ] Delete Transactions
-- [ ] Search
-- [ ] Analytics Dashboard
-- [ ] Charts
-- [ ] Budget Tracking
-- [ ] Notification Listener
-- [ ] OCR Receipts
-- [ ] Location Tracking
-- [ ] AI Search
-- [ ] Cloud Backup
-- [ ] Export Reports
+### Completed
+
+- [x] SQLite integration
+- [x] Repository pattern
+- [x] Add/Edit/Delete transactions
+- [x] SMS transaction detection
+- [x] Notification transaction detection
+- [x] Continuous GPS tracking
+- [x] Reverse geocoding
+- [x] Google Maps integration
+- [x] Transaction details
+- [x] Android 14/15 compatibility
+
+### Planned
+
+- [ ] Search transactions
+- [ ] Expense analytics
+- [ ] Budget tracking
+- [ ] Charts & reports
+- [ ] CSV/PDF export
+- [ ] Cloud backup & sync
+- [ ] OCR receipt scanner
+- [ ] AI-powered expense insights
 
 ---
 
-# 🤝 Contributing
+# 🎯 Development Highlights
 
-Contributions, suggestions, and feedback are always welcome.
-
-If you'd like to improve SpendSense:
-
-1. Fork the repository
-2. Create a new branch
-3. Commit your changes
-4. Open a Pull Request
+- Clean Architecture
+- Repository Pattern
+- Feature-based organization
+- Flutter & Kotlin integration
+- Native Android Services
+- Offline-first design
+- Scalable and maintainable codebase
 
 ---
 
@@ -231,6 +214,4 @@ This project is licensed under the MIT License.
 
 ---
 
-## ⭐ If you like this project, consider giving it a star!
-
-It motivates further development and helps others discover the project.
+## ⭐ If you found this project useful, consider giving it a star!
